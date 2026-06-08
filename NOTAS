@@ -637,5 +637,87 @@ if (isset($_POST['btn_limpiar'])) {
 
 </body>
 </html>
+-------------------
+<?php
+// 1. Conexión a la base de datos
+$conn = new mysqli('localhost', 'root', '', 'examen_productos');
+
+if ($conn->connect_error) {
+    die("Error de conexión: " . $conn->connect_error);
+}
+
+$resultado_busqueda = null;
+
+// 2. Lógica de búsqueda (se ejecuta solo al darle clic a 'BUSCAR')
+if (isset($_POST['bt_buscar'])) {
+    
+    // Atrapamos el nombre de la categoría que el usuario escribió en el HTML
+    $categoria_ingresada = $_POST['categoria']; 
+
+    // Consulta SQL con INNER JOIN filtrando por el nombre de la CATEGORÍA (c.nombre)
+    $sql = "SELECT p.nombre, p.descripcion, p.precio 
+            FROM productos p 
+            INNER JOIN categorias c ON p.categoria_id = c.id 
+            WHERE c.nombre = '$categoria_ingresada'";
+            
+    $resultado_busqueda = $conn->query($sql);
+}
+?>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Examen - Buscar por Categoría</title>
+</head>
+<body>
+
+    <h2>Buscar Productos por Categoría</h2>
+    
+    <!-- 3. Formulario -->
+    <form method='POST' action=''>
+        Nombre de la categoría: 
+        <input type='text' name='categoria' required placeholder='Ej: Electronica'>
+        <button type='submit' name='bt_buscar'>BUSCAR</button>
+    </form>
+
+    <hr>
+
+    <?php
+    // 4. Mostrar resultados (solo si el botón de buscar fue presionado)
+    if (isset($_POST['bt_buscar'])) {
+        
+        // Verificamos si la consulta devolvió al menos 1 fila
+        if ($resultado_busqueda && $resultado_busqueda->num_rows > 0) {
+            
+            echo "<table border='1' cellpadding='5'>";
+            echo "<tr>
+                    <th>Nombre del Producto</th>
+                    <th>Descripción</th>
+                    <th>Precio</th>
+                  </tr>";
+            
+            // Recorremos los resultados y los imprimimos en la tabla
+            while ($producto = $resultado_busqueda->fetch_assoc()) {
+                echo "<tr>";
+                echo "<td>" . $producto['nombre'] . "</td>";
+                echo "<td>" . $producto['descripcion'] . "</td>";
+                echo "<td>$" . $producto['precio'] . "</td>";
+                echo "</tr>";
+            }
+            echo "</table>";
+            
+        } else {
+            // El mensaje de error EXACTO que pide el profesor en la foto (Requisito de 3.5 pts)
+            echo "<h3>No existen productos para la categoría seleccionada.</h3>";
+        }
+    }
+
+    // Cerramos la conexión a la base de datos
+    $conn->close();
+    ?>
+
+</body>
+</html>
 
 	
