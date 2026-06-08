@@ -1,3 +1,39 @@
+<?php
+$server = 'localhost';
+$user = 'root';
+$pass = '';
+$db = 'sistema_inventario';
+
+// 1. Creas una variable para tu nuevo puerto (ejemplo: 3307)
+$puerto = 3307; 
+
+// 2. Lo agregas al final de la fila, justo después de la base de datos
+$conn = new mysqli($server, $user, $pass, $db, $puerto);
+
+if($conn->connect_error){
+    die('brow esta mal tu hv: ' . $conn->connect_error);
+} else {
+    echo "Conectadaso mi brow al puerto " . $puerto;
+}
+?>
+
+$conn = new mysqli ($server,$username,$pass,$db);
+
+if($conn->connect_error){
+    die("errpr en la connecion".connection_status());
+
+}else{
+    echo "conexion exitosa ";
+}
+
+
+
+
+?>
+
+
+
+
 NOTAS 
 BD RELACIONAL fk
 
